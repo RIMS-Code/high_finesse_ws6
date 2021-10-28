@@ -8,6 +8,7 @@ https://github.com/stepansnigirev/py-ws7
 import ctypes
 from typing import List
 
+from headers import load_wlm_data_dll
 from utils import ProxyList
 
 
@@ -17,13 +18,7 @@ class WavelengthMeter:
 
         :param dllpath: Path to the DLL.
         """
-        self.dll = ctypes.WinDLL(dllpath)
-
-        # set up variable types
-        self.dll.GetExposureModeNum.restype = ctypes.c_long
-        self.dll.GetWavelengthNum.restype = ctypes.c_double
-        self.dll.GetFrequencyNum.restype = ctypes.c_double
-        self.dll.GetSwitcherMode.restype = ctypes.c_long
+        self.dll = load_wlm_data_dll(dllpath)
 
     class Channel:
         """Wavelengthmeter channel class."""
