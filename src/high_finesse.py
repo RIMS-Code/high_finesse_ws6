@@ -15,6 +15,18 @@ from utils import ProxyList
 
 
 class WavelengthMeter:
+    """Communicate with a HighFinesse wavelenght meter.
+
+    Note: This only works on Windows. The wavelength meter software must have been
+    started by the user.
+
+    Example:
+        >>> wlm = WavelengthMeter()
+        >>> ch = wlm.channel[5]  # choose the sixth channel
+        >>> a = ch.wavelength  # stores wavelength of channel in variable a
+        >>> b = wlm.wavelengths  # stores all wavelengths as list in variable b
+    """
+
     def __init__(self, dllpath: str = "C:\Windows\System32\wlmData.dll"):
         """Initialize the Wavelength meter.
 
@@ -40,7 +52,12 @@ class WavelengthMeter:
 
             :param parent: Parent class that is calling this one.
             :param idx: Channel number of wavelength meter, pythonic starting at 0.
+
+            :raise TypeError: Not initialized from wavelength meter channel.
             """
+            if not isinstance(parent, WavelengthMeter):
+                raise TypeError("Must initialize channel from `WavelengthMeter` class.")
+
             self._parent = parent
             self._idx = idx + 1
 
@@ -51,6 +68,13 @@ class WavelengthMeter:
             """Get / set auto exposure mode of channel.
 
             :return: Status if auto exposure mode is activated.
+
+            Example:
+                >>> wlm = WavelengthMeter()
+                >>> ch = wlm.channel[2]  # third channel
+                >>> ch.auto_exposure = False
+                >>> ch.auto_exposure
+                False
             """
             return bool(self._dll.GetExposureModeNum(self._idx, True))
 
@@ -71,6 +95,13 @@ class WavelengthMeter:
             :return: Exposure values in ms for the CCD arrays.
 
             :raise ValueError: Exposure not set with one or two values.
+
+            Example:
+                >>> wlm = WavelengthMeter()
+                >>> ch = wlm.channel[2]  # third channel
+                >>> ch.exposure = [100, 100]  # set both CCD arrays to 100ms exposure
+                >>> ch.exposure
+                [100, 100]
             """
             exp_arr1 = int(self._dll.GetExposureNum(self._idx, 1, 0))
             exp_arr2 = int(self._dll.GetExposureNum(self._idx, 2, 0))
@@ -96,6 +127,12 @@ class WavelengthMeter:
             """Get frequency of channel in THz.
 
             :return: Frequency in THz
+
+            Example:
+                >>> wlm = WavelengthMeter()
+                >>> ch = wlm.channel[2]  # third channel
+                >>> ch.frequency
+                337.212
             """
             return self._dll.GetFrequencyNum(self._idx, 0)
 
@@ -109,6 +146,13 @@ class WavelengthMeter:
             Note, if the channel is unused, it will automatically enable usage.
 
             :return: Status if the specific channel is turned on.
+
+            Example:
+                >>> wlm = WavelengthMeter()
+                >>> ch = wlm.channel[2]  # third channel
+                >>> ch.show_channel = True
+                >>> ch.show_channel
+                True
             """
             use_flag = ctypes.c_long(0)
             show_flag = ctypes.c_long(0)
@@ -135,6 +179,13 @@ class WavelengthMeter:
             Displaying of the curve remaines untouched.
 
             :return: Status if the specific channel is turned on.
+
+            Example:
+                >>> wlm = WavelengthMeter()
+                >>> ch = wlm.channel[2]  # third channel
+                >>> ch.use_channel = True
+                >>> ch.use_channel
+                True
             """
             use_flag = ctypes.c_long(0)
             show_flag = ctypes.c_long(0)
@@ -159,17 +210,36 @@ class WavelengthMeter:
             """Get wavelength of given channel in nm.
 
             :return: Wavelength in nm
+
+            Example:
+                >>> wlm = WavelengthMeter()
+                >>> ch = wlm.channel[2]  # third channel
+                >>> ch.wavelength
+                837.212
             """
             return self._dll.GetWavelengthNum(self._idx, 0)
 
     @property
     def channel(self):
-        """Return a channel object."""
+        """Return a channel object.
+
+        Note: The first channel is number 0 (think pythonic!).
+
+        Example:
+            >>> wlm = WavelengthMeter()
+            >>> ch = wlm.channel[2]  # third channel
+        """
         return ProxyList(self, self.Channel, range(8))
 
     @property
     def frequencies(self) -> List[float]:
-        """Get frequencies of all 8 channels."""
+        """Get frequencies of all 8 channels.
+
+        Example:
+            >>> wlm = WavelengthMeter()
+            >>> wlm.frequencies
+            [223.232, 337.121, 339.888, 321.231, 339.981, 398.121, 420.121, 333.212]
+        """
         return [self.channel[it].frequency for it in range(8)]
 
     @property
@@ -181,6 +251,12 @@ class WavelengthMeter:
         :return: Operation state of the wavelength meter.
 
         :raise TypeError: Set variable is not an `OperationState` enum.
+
+        Example:
+            >>> wlm = WavelengthMeter()
+            >>> wlm.operation = wlm.OperationState.measurement
+            >>> print(wlm.operation)
+            OperationState.measurement
         """
         return self.OperationState(self._dll.GetOperationState(0))
 
@@ -195,6 +271,12 @@ class WavelengthMeter:
         """Get / set switcher mode.
 
         :return: Status if switcher mode is turned on.
+
+        Example:
+            >>> wlm = WavelengthMeter()
+            >>> wlm.switcher_mode = True
+            >>> wlm.switcher_mode
+            True
         """
         return bool(self._dll.GetSwitcherMode(0))
 
@@ -204,5 +286,11 @@ class WavelengthMeter:
 
     @property
     def wavelengths(self) -> List[float]:
-        """Get wavelengths of all 8 channels."""
+        """Get wavelengths of all 8 channels.
+
+        Example:
+            >>> wlm = WavelengthMeter()
+            >>> wlm.wavelengths
+            [823.232, 822.121, 888.888, 888.231, 898.981, 888.121, 764.121, 921.212]
+        """
         return [self.channel[it].wavelength for it in range(8)]
