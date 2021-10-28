@@ -1,4 +1,4 @@
-######################################################################################################
+##########################################################################
 # @package wlmData
 # @file wlmConst.py
 # @copyright HighFinesse GmbH.
@@ -14,10 +14,10 @@
 # ----------
 # 2018.09.15
 # v0.1 - Initial release
-#/
+# /
 
-## ###########  Constants  ##############################################
-## Instantiating Constants for 'RFC' parameter
+# ##########  Constants  ##############################################
+# Instantiating Constants for 'RFC' parameter
 cInstCheckForWLM = -1
 cInstResetCalc = 0
 cInstReturnMode = cInstResetCalc
@@ -28,7 +28,7 @@ cInstControlWLM = 3
 cInstControlDelay = 4
 cInstControlPriority = 5
 
-## Notification Constants for 'Mode' parameter
+# Notification Constants for 'Mode' parameter
 cNotifyInstallCallback = 0
 cNotifyRemoveCallback = 1
 cNotifyInstallWaitEvent = 2
@@ -36,7 +36,7 @@ cNotifyRemoveWaitEvent = 3
 cNotifyInstallCallbackEx = 4
 cNotifyInstallWaitEventEx = 5
 
-## ResultError Constants of Set...-functions
+# ResultError Constants of Set...-functions
 ResERR_NoErr = 0
 ResERR_WlmMissing = -1
 ResERR_CouldNotSet = -2
@@ -59,7 +59,7 @@ ResERR_TriggerPending = -18
 ResERR_TriggerWaiting = -19
 ResERR_NoLegitimation = -20
 
-## Mode Constants for Callback-Export and WaitForWLMEvent-function
+# Mode Constants for Callback-Export and WaitForWLMEvent-function
 cmiResultMode = 1
 cmiRange = 2
 cmiPulse = 3
@@ -284,44 +284,44 @@ cmiAveragingCount = 1524
 cmiAveragingMode = 1525
 cmiAveragingType = 1526
 
-## Index constants for Get- and SetExtraSetting
+# Index constants for Get- and SetExtraSetting
 cesCalculateLive = 4501
 
-## WLM Control Mode Constants
+# WLM Control Mode Constants
 cCtrlWLMShow = 1
 cCtrlWLMHide = 2
 cCtrlWLMExit = 3
 cCtrlWLMStore = 4
 cCtrlWLMCompare = 5
-cCtrlWLMWait        = 0x0010
+cCtrlWLMWait = 0x0010
 cCtrlWLMStartSilent = 0x0020
-cCtrlWLMSilent      = 0x0040
-cCtrlWLMStartDelay  = 0x0080
+cCtrlWLMSilent = 0x0040
+cCtrlWLMStartDelay = 0x0080
 
-## Operation Mode Constants (for "Operation" and "GetOperationState" functions)
+# Operation Mode Constants (for "Operation" and "GetOperationState" functions)
 cStop = 0
 cAdjustment = 1
 cMeasurement = 2
 
-## Base Operation Constants (To be used exclusively, only one of this list at a time,
-## but still can be combined with "Measurement Action Addition Constants". See below.)
+# Base Operation Constants (To be used exclusively, only one of this list at a time,
+# but still can be combined with "Measurement Action Addition Constants". See below.)
 cCtrlStopAll = cStop
 cCtrlStartAdjustment = cAdjustment
 cCtrlStartMeasurement = cMeasurement
 cCtrlStartRecord = 0x0004
 cCtrlStartReplay = 0x0008
-cCtrlStoreArray  = 0x0010
-cCtrlLoadArray   = 0x0020
+cCtrlStoreArray = 0x0010
+cCtrlLoadArray = 0x0020
 
-## Additional Operation Flag Constants (combine with "Base Operation Constants" above.)
+# Additional Operation Flag Constants (combine with "Base Operation Constants" above.)
 cCtrlDontOverwrite = 0x0000
-cCtrlOverwrite     = 0x1000 ## don't combine with cCtrlFileDialog
-cCtrlFileGiven     = 0x0000
-cCtrlFileDialog    = 0x2000 ## don't combine with cCtrlOverwrite and cCtrlFileASCII
-cCtrlFileBinary    = 0x0000 ## *.smr, *.ltr
-cCtrlFileASCII     = 0x4000 ## *.smx, *.ltx, don't combine with cCtrlFileDialog
+cCtrlOverwrite = 0x1000  # don't combine with cCtrlFileDialog
+cCtrlFileGiven = 0x0000
+cCtrlFileDialog = 0x2000  # don't combine with cCtrlOverwrite and cCtrlFileASCII
+cCtrlFileBinary = 0x0000  # *.smr, *.ltr
+cCtrlFileASCII = 0x4000  # *.smx, *.ltx, don't combine with cCtrlFileDialog
 
-## Measurement Control Mode Constants
+# Measurement Control Mode Constants
 cCtrlMeasDelayRemove = 0
 cCtrlMeasDelayGenerally = 1
 cCtrlMeasDelayOnce = 2
@@ -330,20 +330,20 @@ cCtrlMeasDelayIdleOnce = 4
 cCtrlMeasDelayIdleEach = 5
 cCtrlMeasDelayDefault = 6
 
-## Measurement Triggering Action Constants
+# Measurement Triggering Action Constants
 cCtrlMeasurementContinue = 0
 cCtrlMeasurementInterrupt = 1
 cCtrlMeasurementTriggerPoll = 2
 cCtrlMeasurementTriggerSuccess = 3
 cCtrlMeasurementEx = 0x0100
 
-## ExposureRange Constants
+# ExposureRange Constants
 cExpoMin = 0
 cExpoMax = 1
 cExpo2Min = 2
 cExpo2Max = 3
 
-## Amplitude Constants
+# Amplitude Constants
 cMin1 = 0
 cMin2 = 1
 cMax1 = 2
@@ -351,7 +351,7 @@ cMax2 = 3
 cAvg1 = 4
 cAvg2 = 5
 
-## Measurement Range Constants
+# Measurement Range Constants
 cRange_250_410 = 4
 cRange_250_425 = 0
 cRange_300_410 = 3
@@ -363,41 +363,41 @@ cRange_900_1500 = cRange_800_1300
 cRange_1100_1700 = 7
 cRange_1100_1800 = cRange_1100_1700
 
-## Measurement Range Model Constants
+# Measurement Range Model Constants
 cRangeModelOld = 65535
 cRangeModelByOrder = 65534
 cRangeModelByWavelength = 65533
 
-## Unit Constants for Get-/SetResultMode, GetLinewidth, Convert... and Calibration
+# Unit Constants for Get-/SetResultMode, GetLinewidth, Convert... and Calibration
 cReturnWavelengthVac = 0
 cReturnWavelengthAir = 1
 cReturnFrequency = 2
 cReturnWavenumber = 3
 cReturnPhotonEnergy = 4
 
-## Power Unit Constants
+# Power Unit Constants
 cPower_muW = 0
 cPower_dBm = 1
 
-## Source Type Constants for Calibration
+# Source Type Constants for Calibration
 cHeNe633 = 0
 cHeNe1152 = 0
 cNeL = 1
 cOther = 2
 cFreeHeNe = 3
 
-## Unit Constants for Autocalibration
+# Unit Constants for Autocalibration
 cACOnceOnStart = 0
 cACMeasurements = 1
 cACDays = 2
 cACHours = 3
 cACMinutes = 4
 
-## ExposureRange Constants
+# ExposureRange Constants
 cGetSync = 1
 cSetSync = 2
 
-## Pattern- and Analysis Constants
+# Pattern- and Analysis Constants
 cPatternDisable = 0
 cPatternEnable = 1
 cAnalysisDisable = cPatternDisable
@@ -412,7 +412,7 @@ cSignalAnalysis = 4
 cSignalAnalysisX = cSignalAnalysis
 cSignalAnalysisY = cSignalAnalysis + 1
 
-## State constants used with AutoExposureSetting functions
+# State constants used with AutoExposureSetting functions
 cJustStepDown = 0
 cRestartAtMinimum = 1
 cJustStepUp = 0
@@ -420,13 +420,13 @@ cDriveToLevel = 1
 cConsiderFeedback = 1
 cDontConsiderFeedback = 0
 
-## State constants used with AveragingSetting functions
+# State constants used with AveragingSetting functions
 cAvrgFloating = 1
 cAvrgSucceeding = 2
 cAvrgSimple = 0
 cAvrgPattern = 1
 
-## Return errorvalues of GetFrequency, GetWavelength and GetWLMVersion
+# Return errorvalues of GetFrequency, GetWavelength and GetWLMVersion
 ErrNoValue = 0
 ErrNoSignal = -1
 ErrBadSignal = -2
@@ -442,49 +442,49 @@ ErrOutOfRange = -14
 ErrUnitNotAvailable = -15
 ErrMaxErr = ErrUnitNotAvailable
 
-## Return errorvalues of GetTemperature and GetPressure
+# Return errorvalues of GetTemperature and GetPressure
 ErrTemperature = -1000
 ErrTempNotMeasured = ErrTemperature + ErrNoValue
 ErrTempNotAvailable = ErrTemperature + ErrNotAvailable
 ErrTempWlmMissing = ErrTemperature + ErrWlmMissing
 
-## Return errorvalues of GetDistance
-## real errorvalues are ErrDistance combined with those of GetWavelength
+# Return errorvalues of GetDistance
+# real errorvalues are ErrDistance combined with those of GetWavelength
 ErrDistance = -1000000000
 ErrDistanceNotAvailable = ErrDistance + ErrNotAvailable
 ErrDistanceWlmMissing = ErrDistance + ErrWlmMissing
 
-## Return flags of ControlWLMEx in combination with Show or Hide, Wait and Res = 1
-flServerStarted           = 0x00000001
-flErrDeviceNotFound       = 0x00000002
-flErrDriverError          = 0x00000004
-flErrUSBError             = 0x00000008
-flErrUnknownDeviceError   = 0x00000010
-flErrWrongSN              = 0x00000020
-flErrUnknownSN            = 0x00000040
-flErrTemperatureError     = 0x00000080
-flErrPressureError        = 0x00000100
-flErrCancelledManually    = 0x00000200
-flErrWLMBusy              = 0x00000400
-flErrUnknownError         = 0x00001000
+# Return flags of ControlWLMEx in combination with Show or Hide, Wait and Res = 1
+flServerStarted = 0x00000001
+flErrDeviceNotFound = 0x00000002
+flErrDriverError = 0x00000004
+flErrUSBError = 0x00000008
+flErrUnknownDeviceError = 0x00000010
+flErrWrongSN = 0x00000020
+flErrUnknownSN = 0x00000040
+flErrTemperatureError = 0x00000080
+flErrPressureError = 0x00000100
+flErrCancelledManually = 0x00000200
+flErrWLMBusy = 0x00000400
+flErrUnknownError = 0x00001000
 flNoInstalledVersionFound = 0x00002000
-flDesiredVersionNotFound  = 0x00004000
-flErrFileNotFound         = 0x00008000
-flErrParmOutOfRange       = 0x00010000
-flErrCouldNotSet          = 0x00020000
-flErrEEPROMFailed         = 0x00040000
-flErrFileFailed           = 0x00080000
-flDeviceDataNewer         = 0x00100000
-flFileDataNewer           = 0x00200000
-flErrDeviceVersionOld     = 0x00400000
-flErrFileVersionOld       = 0x00800000
-flDeviceStampNewer        = 0x01000000
-flFileStampNewer          = 0x02000000
+flDesiredVersionNotFound = 0x00004000
+flErrFileNotFound = 0x00008000
+flErrParmOutOfRange = 0x00010000
+flErrCouldNotSet = 0x00020000
+flErrEEPROMFailed = 0x00040000
+flErrFileFailed = 0x00080000
+flDeviceDataNewer = 0x00100000
+flFileDataNewer = 0x00200000
+flErrDeviceVersionOld = 0x00400000
+flErrFileVersionOld = 0x00800000
+flDeviceStampNewer = 0x01000000
+flFileStampNewer = 0x02000000
 
-## Return file info flags of SetOperationFile
+# Return file info flags of SetOperationFile
 flFileInfoDoesntExist = 0x0000
-flFileInfoExists      = 0x0001
-flFileInfoCantWrite   = 0x0002
-flFileInfoCantRead    = 0x0004
+flFileInfoExists = 0x0001
+flFileInfoCantWrite = 0x0002
+flFileInfoCantRead = 0x0004
 flFileInfoInvalidName = 0x0008
 cFileParameterError = -1

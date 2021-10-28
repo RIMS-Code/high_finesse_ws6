@@ -4,11 +4,13 @@ This class is heavily influenced / copied from:
 https://github.com/stepansnigirev/py-ws7
 """
 
-
+from enum import Enum
 import ctypes
 from typing import List
+import warnings
 
 from headers import load_wlm_data_dll
+from headers import wlmConst
 from utils import ProxyList
 
 
@@ -18,7 +20,17 @@ class WavelengthMeter:
 
         :param dllpath: Path to the DLL.
         """
-        self.dll = load_wlm_data_dll(dllpath)
+        self._dll = load_wlm_data_dll(dllpath)
+
+        if self._dll.GetWLMCount(0) == 0:
+            raise IOError("There is no running wavelength meter server instance.")
+
+    class OperationState(Enum):
+        """Enum class with the available operation states."""
+
+        adjustment = wlmConst.cAdjustment
+        measurement = wlmConst.cMeasurement
+        stop = wlmConst.cStop
 
     class Channel:
         """Wavelengthmeter channel class."""
@@ -32,7 +44,7 @@ class WavelengthMeter:
             self._parent = parent
             self._idx = idx + 1
 
-            self._dll = self._parent.dll
+            self._dll = self._parent._dll
 
         @property
         def auto_exposure(self) -> bool:
@@ -40,15 +52,11 @@ class WavelengthMeter:
 
             :return: Status if auto exposure mode is activated.
             """
-            return bool(
-                self._dll.GetExposureModeNum(
-                    ctypes.c_long(self._idx), ctypes.c_bool(True)
-                )
-            )
+            return bool(self._dll.GetExposureModeNum(self._idx, True))
 
         @auto_exposure.setter
         def auto_exposure(self, value: bool):
-            self._dll.SetExposureModeNum(ctypes.c_long(self._idx), ctypes.c_bool(value))
+            self._dll.SetExposureModeNum(self._idx, value)
 
         @property
         def exposure(self) -> List[int]:
@@ -64,18 +72,8 @@ class WavelengthMeter:
 
             :raise ValueError: Exposure not set with one or two values.
             """
-            exp_arr1 = int(
-                self._dll.GetExposureNum(
-                    ctypes.c_long(self._idx), ctypes.c_long(1), ctypes.c_long(0)
-                )
-            )
-
-            exp_arr2 = int(
-                self._dll.GetExposureNum(
-                    ctypes.c_long(self._idx), ctypes.c_long(2), ctypes.c_long(0)
-                )
-            )
-
+            exp_arr1 = int(self._dll.GetExposureNum(self._idx, 1, 0))
+            exp_arr2 = int(self._dll.GetExposureNum(self._idx, 2, 0))
             return [exp_arr1, exp_arr2]
 
         @exposure.setter
@@ -89,13 +87,9 @@ class WavelengthMeter:
                     "the CCD array exposure times."
                 )
 
-            self._dll.SetExposureNum(
-                ctypes.c_long(self._idx), ctypes.c_long(1), ctypes.c_long(value[0])
-            )
+            self._dll.SetExposureNum(self._idx, 1, value[0])
             if len(value) == 2:
-                self._dll.SetExposureNum(
-                    ctypes.c_long(self._idx), ctypes.c_long(2), ctypes.c_long(value[1])
-                )
+                self._dll.SetExposureNum(self._idx, 2, value[1])
 
         @property
         def frequency(self) -> float:
@@ -103,9 +97,62 @@ class WavelengthMeter:
 
             :return: Frequency in THz
             """
-            return self._dll.GetFrequencyNum(
-                ctypes.c_long(self._idx), ctypes.c_double(0)
+            return self._dll.GetFrequencyNum(self._idx, 0)
+
+        @property
+        def show_channel(self) -> bool:
+            """Turn channel displaying on or off.
+
+            Only works when the wavelength meter is in switcher mode, otherwise it warns
+            the user that it cannot do anything.
+            Displaying of the curve remaines untouched.
+            Note, if the channel is unused, it will automatically enable usage.
+
+            :return: Status if the specific channel is turned on.
+            """
+            use_flag = ctypes.c_long(0)
+            show_flag = ctypes.c_long(0)
+            self._dll.GetSwitcherSignalStates(
+                self._idx, ctypes.byref(use_flag), ctypes.byref(show_flag)
             )
+            return bool(show_flag)
+
+        @show_channel.setter
+        def show_channel(self, value: bool):
+            if self._parent.switcher_mode:
+                self._dll.SetSwitcherSignalStates(self._idx, 1, int(value))
+            else:
+                warnings.warn(
+                    "Switcher mode not active, therefore cannot use this" "function."
+                )
+
+        @property
+        def use_channel(self) -> bool:
+            """Turn channel usage on or off.
+
+            Only works when the wavelength meter is in switcher mode, otherwise it warns
+            the user that it cannot do anything.
+            Displaying of the curve remaines untouched.
+
+            :return: Status if the specific channel is turned on.
+            """
+            use_flag = ctypes.c_long(0)
+            show_flag = ctypes.c_long(0)
+            self._dll.GetSwitcherSignalStates(
+                self._idx, ctypes.byref(use_flag), ctypes.byref(show_flag)
+            )
+            return bool(use_flag)
+
+        @use_channel.setter
+        def use_channel(self, value: bool):
+            if self._parent.switcher_mode:
+                self._dll.SetSwitcherSignalStates(
+                    self._idx, int(value), int(self.show_channel)
+                )
+            else:
+                warnings.warn(
+                    "Switcher mode not active, therefore cannot use this" "function."
+                )
 
         @property
         def wavelength(self) -> float:
@@ -113,9 +160,7 @@ class WavelengthMeter:
 
             :return: Wavelength in nm
             """
-            return self._dll.GetWavelengthNum(
-                ctypes.c_long(self._idx), ctypes.c_double(0)
-            )
+            return self._dll.GetWavelengthNum(self._idx, 0)
 
     @property
     def channel(self):
@@ -128,16 +173,34 @@ class WavelengthMeter:
         return [self.channel[it].frequency for it in range(8)]
 
     @property
+    def operation(self) -> OperationState:
+        """Get / Set operation state.
+
+        See the `OperationState` enum class for options.
+
+        :return: Operation state of the wavelength meter.
+
+        :raise TypeError: Set variable is not an `OperationState` enum.
+        """
+        return self.OperationState(self._dll.GetOperationState(0))
+
+    @operation.setter
+    def operation(self, value: OperationState):
+        if not isinstance(value, self.OperationState):
+            raise TypeError("Your chosen value is not of type `OperationState`.")
+        self._dll.Operation(value.value)
+
+    @property
     def switcher_mode(self) -> bool:
         """Get / set switcher mode.
 
         :return: Status if switcher mode is turned on.
         """
-        return bool(self.dll.GetSwitcherMode(ctypes.c_long(0)))
+        return bool(self._dll.GetSwitcherMode(0))
 
     @switcher_mode.setter
     def switcher_mode(self, value: bool):
-        self.dll.SetSwitcherMode(ctypes.c_long(int(value)))
+        self._dll.SetSwitcherMode(int(value))
 
     @property
     def wavelengths(self) -> List[float]:
